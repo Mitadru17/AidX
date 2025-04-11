@@ -1,5 +1,13 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  OAuthProvider,
+  PhoneAuthProvider,
+  signInWithPopup,
+  signInWithPhoneNumber,
+  RecaptchaVerifier
+} from 'firebase/auth';
 import { getAnalytics } from 'firebase/analytics';
 
 const firebaseConfig = {
@@ -16,10 +24,25 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 
+// Initialize providers
+const googleProvider = new GoogleAuthProvider();
+const appleProvider = new OAuthProvider('apple.com');
+const phoneProvider = new PhoneAuthProvider(auth);
+
 // Initialize Analytics only on client side
 let analytics = null;
 if (typeof window !== 'undefined') {
   analytics = getAnalytics(app);
 }
 
-export { app, auth, analytics }; 
+export { 
+  app, 
+  auth, 
+  analytics,
+  googleProvider,
+  appleProvider,
+  phoneProvider,
+  signInWithPopup,
+  signInWithPhoneNumber,
+  RecaptchaVerifier
+}; 

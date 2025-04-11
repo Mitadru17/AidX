@@ -4,13 +4,22 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  RecaptchaVerifier,
+  ConfirmationResult
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { 
+  auth, 
+  googleProvider, 
+  appleProvider,
+  signInWithPopup,
+  signInWithPhoneNumber
+} from '@/lib/firebase';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -39,6 +48,51 @@ export function useAuth() {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      return result.user;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const loginWithApple = async () => {
+    try {
+      const result = await signInWithPopup(auth, appleProvider);
+      return result.user;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const setupRecaptcha = (elementId: string) => {
+    const recaptchaVerifier = new RecaptchaVerifier(auth, elementId, {
+      size: 'invisible',
+    });
+    return recaptchaVerifier;
+  };
+
+  const loginWithPhone = async (phoneNumber: string, recaptchaVerifier: RecaptchaVerifier) => {
+    try {
+      const confirmation = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+      setConfirmationResult(confirmation);
+      return confirmation;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const confirmPhoneCode = async (code: string) => {
+    if (!confirmationResult) throw new Error('No confirmation result found');
+    try {
+      const result = await confirmationResult.confirm(code);
+      return result.user;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await signOut(auth);
@@ -47,5 +101,16 @@ export function useAuth() {
     }
   };
 
-  return { user, loading, login, signup, logout };
+  return { 
+    user, 
+    loading, 
+    login, 
+    signup, 
+    logout,
+    loginWithGoogle,
+    loginWithApple,
+    loginWithPhone,
+    confirmPhoneCode,
+    setupRecaptcha
+  };
 } 
