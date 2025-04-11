@@ -82,14 +82,18 @@ export default function PatientDashboard() {
           </button>
 
           {/* Chat Bot */}
-          <button className="flex flex-col items-center p-6 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
+          <Link 
+            href="/patient/chatbot"
+            className="flex flex-col items-center p-6 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" 
+            style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}
+          >
             <div className="w-12 h-12 mb-4 transition-transform duration-300 group-hover:rotate-6">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="transition-transform duration-300 hover:scale-110">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
             </div>
             Chat with our bot for your queries
-          </button>
+          </Link>
 
           {/* Daily Log */}
           <button className="flex flex-col items-center p-6 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>

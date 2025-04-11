@@ -65,7 +65,7 @@ export default function AboutUs() {
         <div className="mb-16 transform opacity-0 animate-slideIn" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-4">Dr.Neha Manoj, MBBS</h1>
+              <h1 className="text-4xl font-bold mb-4">Dr.Neha Sharma, MBBS</h1>
               <p className="text-gray-600 text-lg leading-relaxed">
                 Junior Doctor Neha has been a dedicated member of The Community College health services for the past five years. Highly regarded by her patients, she routinely attends to over 30 individuals daily and is a well-known and trusted figure within the local community.
               </p>
@@ -73,7 +73,7 @@ export default function AboutUs() {
             <div className="w-full md:w-1/3 transition-transform duration-300 hover:scale-105">
               <Image
                 src="/doctor-image.jpg"
-                alt="Dr. Neha Manoj"
+                alt="Dr. Neha Sharma"
                 width={400}
                 height={500}
                 className="rounded-lg shadow-lg"

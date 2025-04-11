@@ -1,8 +1,8 @@
 {
   "/page": "app/page.js",
-  "/patient/dashboard/page": "app/patient/dashboard/page.js",
-  "/doctor/dashboard/page": "app/doctor/dashboard/page.js",
   "/about-us/page": "app/about-us/page.js",
   "/select-role/page": "app/select-role/page.js",
-  "/sign-up/[[...sign-up]]/page": "app/sign-up/[[...sign-up]]/page.js"
+  "/patient/dashboard/page": "app/patient/dashboard/page.js",
+  "/patient/chatbot/page": "app/patient/chatbot/page.js",
+  "/doctor/dashboard/page": "app/doctor/dashboard/page.js"
 }
