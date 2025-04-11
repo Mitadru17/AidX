@@ -13,7 +13,7 @@ export default function Navigation({ showLoginButton = true, showLogoutButton = 
       <Link href="/" className="flex items-center gap-3">
         <div className="relative w-[48px] h-[48px]">
           <Image
-            src="/aidx-logo.png"
+            src="/logo.png"
             alt="AidX Logo"
             fill
             sizes="48px"

@@ -12,17 +12,20 @@ export default function LandingPage() {
     {
       text: "Very good doctor",
       author: "Jamal",
-      role: "Local guide"
+      role: "Local guide",
+      image: "/reviewers/jamal.jpeg"
     },
     {
       text: "Great medication",
-      author: "Leila",
-      role: "Cow glazer"
+      author: "Laila",
+      role: "Cow glazer",
+      image: "/reviewers/leila.jpeg"
     },
     {
       text: "A genuinely glowing doctor",
       author: "Karan",
-      role: "Rich investor"
+      role: "Rich investor",
+      image: "/reviewers/karan.jpeg"
     }
   ];
 
@@ -65,7 +68,15 @@ export default function LandingPage() {
               <div key={index} className="p-6 bg-gray-50 rounded-lg">
                 <p className="text-lg mb-4">{review.text}</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                  <div className="relative w-10 h-10">
+                    <Image
+                      src={review.image}
+                      alt={`${review.author}'s photo`}
+                      fill
+                      className="rounded-full object-cover"
+                      sizes="40px"
+                    />
+                  </div>
                   <div>
                     <p className="font-medium">{review.author}</p>
                     <p className="text-sm text-gray-600">{review.role}</p>
