@@ -10,12 +10,33 @@ export default function DoctorDashboard() {
   const { signOut } = useClerk();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [unreadEmergencies, setUnreadEmergencies] = useState(0);
 
   useEffect(() => {
     if (isLoaded && !user) {
       router.push('/');
     }
     setMounted(true);
+    
+    // Check for unread emergencies
+    const checkEmergencies = () => {
+      const emergenciesJSON = localStorage.getItem('doctorEmergencies');
+      if (emergenciesJSON) {
+        try {
+          const emergencies = JSON.parse(emergenciesJSON);
+          const unread = emergencies.filter((e: { read: boolean, resolved?: boolean }) => !e.read && !e.resolved).length;
+          setUnreadEmergencies(unread);
+        } catch (error) {
+          console.error('Error checking emergencies:', error);
+        }
+      }
+    };
+    
+    // Check initially and then every 5 seconds
+    checkEmergencies();
+    const interval = setInterval(checkEmergencies, 5000);
+    
+    return () => clearInterval(interval);
   }, [isLoaded, user, router]);
 
   const handleSignOut = async () => {
@@ -61,9 +82,17 @@ export default function DoctorDashboard() {
           <h1 className="text-4xl font-bold transform transition-all duration-500 translate-y-0 opacity-100">
             Welcome doctor,
           </h1>
-          <button className="px-6 py-2 bg-red-500 text-white rounded-lg transition-all duration-300 hover:bg-red-600 hover:shadow-lg hover:-translate-y-1 active:translate-y-0 animate-pulse">
+          <Link
+            href="/doctor/emergencies"
+            className="px-6 py-2 bg-red-500 text-white rounded-lg transition-all duration-300 hover:bg-red-600 hover:shadow-lg hover:-translate-y-1 active:translate-y-0 animate-pulse relative"
+          >
             Emergency Alert
-          </button>
+            {unreadEmergencies > 0 && (
+              <span className="absolute -top-2 -right-2 bg-white text-red-600 rounded-full h-7 w-7 flex items-center justify-center font-bold text-sm animate-pulse">
+                {unreadEmergencies}
+              </span>
+            )}
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -77,15 +106,19 @@ export default function DoctorDashboard() {
             <span className="text-xl text-center">Access your previous records of patients</span>
           </button>
 
-          {/* Patient Details Entry */}
-          <button className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+          {/* Patient Details Entry - Update this button to link to the patient-checkup page */}
+          <Link
+            href="/doctor/patient-checkup"
+            className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" 
+            style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
+          >
             <div className="w-16 h-16 mb-4 transition-transform duration-300 group-hover:rotate-6">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-full h-full transition-transform duration-300 hover:scale-110">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
             </div>
             <span className="text-xl text-center">Enter patient details and symptoms during checkup</span>
-          </button>
+          </Link>
 
           {/* Patient Vitals */}
           <button className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
@@ -97,15 +130,22 @@ export default function DoctorDashboard() {
             <span className="text-xl text-center">Enter patient vitals/symptoms for rounds</span>
           </button>
 
-          {/* Appointments Management */}
-          <button className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-            <div className="w-16 h-16 mb-4 transition-transform duration-300 group-hover:rotate-6">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-full h-full transition-transform duration-300 hover:scale-110">
+          {/* Appointments & Patient Management */}
+          <Link 
+            href="/doctor/appointments"
+            className="flex flex-col items-center p-6 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" 
+            style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
+          >
+            <div className="w-12 h-12 mb-4 transition-transform duration-300 group-hover:rotate-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <span className="text-xl text-center">Check appointments and patient management</span>
-          </button>
+            <div className="text-center">
+              <span className="block text-lg">Appointments & Patient Management</span>
+              <span className="text-sm opacity-90">Check patient appointments</span>
+            </div>
+          </Link>
 
           {/* End of Day Report */}
           <button className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn col-span-2" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}>
@@ -120,8 +160,8 @@ export default function DoctorDashboard() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto py-8 bg-gray-50 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 text-center transform transition-all duration-500 translate-y-0 opacity-100">
+      <footer className="mt-auto py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-600">AidX Copyrights reserved 2025</p>
           <div className="flex justify-center gap-6 mt-4">
             <a href="#" className="text-gray-600 hover:text-gray-900 transition-all duration-300 hover:-translate-y-1">Facebook</a>

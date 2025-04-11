@@ -1,8 +1,7 @@
 {
-  "/page": "app/page.js",
-  "/about-us/page": "app/about-us/page.js",
-  "/select-role/page": "app/select-role/page.js",
   "/patient/dashboard/page": "app/patient/dashboard/page.js",
-  "/patient/chatbot/page": "app/patient/chatbot/page.js",
-  "/doctor/dashboard/page": "app/doctor/dashboard/page.js"
+  "/select-role/page": "app/select-role/page.js",
+  "/patient/dailylog/page": "app/patient/dailylog/page.js",
+  "/patient/previous-records/page": "app/patient/previous-records/page.js",
+  "/patient/notifications/page": "app/patient/notifications/page.js"
 }
