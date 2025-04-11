@@ -1,6 +1,24 @@
 # Set default behavior to automatically normalize line endings
 * text=auto
 
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.txt text
+*.html text
+*.css text
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.json text
+*.yml text
+*.yaml text
+*.md text
+
+# Files that should have specific line ending
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
 # Force batch scripts to use CRLF line endings
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
