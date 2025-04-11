@@ -1,5 +1,15 @@
 # 🏥 Smart Care Assistant
 
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Contributors](https://img.shields.io/github/contributors/ManojK2K06/AidX.svg)]([https://github.com/ManojK2K06/AidX/graphs/contributors])
+[![Issues](https://img.shields.io/github/issues/ManojK2K06/AidX.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/ManojK2K06/AidX.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/pulls)
+
+
+
+## 📌 Overview
+
+
 A smart assistant platform built for small clinics and junior doctors to streamline patient management, detect early warning signs, and improve care in fast-paced, resource-limited environments.
 
 ---
