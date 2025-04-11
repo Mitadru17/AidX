@@ -1,14 +1,103 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import Navigation from '@/components/Navigation';
 
+interface MedicalRecord {
+  id: string;
+  date: string;
+  doctor: string;
+  diagnosis: string;
+  prescription: string;
+  nextVisit: string;
+}
+
+interface Medication {
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'completed' | 'upcoming';
+}
+
+interface Appointment {
+  id: string;
+  doctor: string;
+  date: string;
+  time: string;
+  type: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+}
+
 export default function PatientDashboard() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
+  const [activeTab, setActiveTab] = useState<'overview' | 'records' | 'medications'>('overview');
+
+  // Sample data - In a real app, this would come from an API
+  const medicalRecords: MedicalRecord[] = [
+    {
+      id: '1',
+      date: '2024-03-10',
+      doctor: 'Dr. Neha',
+      diagnosis: 'Common Cold',
+      prescription: 'Paracetamol 500mg',
+      nextVisit: '2024-03-24'
+    },
+    {
+      id: '2',
+      date: '2024-02-15',
+      doctor: 'Dr. Neha',
+      diagnosis: 'Annual Checkup',
+      prescription: 'None',
+      nextVisit: '2025-02-15'
+    }
+  ];
+
+  const medications: Medication[] = [
+    {
+      id: '1',
+      name: 'Paracetamol',
+      dosage: '500mg',
+      frequency: 'Twice daily',
+      startDate: '2024-03-10',
+      endDate: '2024-03-17',
+      status: 'active'
+    },
+    {
+      id: '2',
+      name: 'Vitamin D',
+      dosage: '1000 IU',
+      frequency: 'Once daily',
+      startDate: '2024-01-01',
+      endDate: '2024-12-31',
+      status: 'active'
+    }
+  ];
+
+  const appointments: Appointment[] = [
+    {
+      id: '1',
+      doctor: 'Dr. Neha',
+      date: '2024-03-24',
+      time: '10:00 AM',
+      type: 'Follow-up',
+      status: 'scheduled'
+    },
+    {
+      id: '2',
+      doctor: 'Dr. Neha',
+      date: '2024-02-15',
+      time: '11:30 AM',
+      type: 'Annual Checkup',
+      status: 'completed'
+    }
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -29,58 +118,230 @@ export default function PatientDashboard() {
     return null;
   }
 
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'active':
+        return 'text-green-600 bg-green-100';
+      case 'completed':
+        return 'text-blue-600 bg-blue-100';
+      case 'upcoming':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'scheduled':
+        return 'text-purple-600 bg-purple-100';
+      case 'cancelled':
+        return 'text-red-600 bg-red-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Navigation showLoginButton={false} showLogoutButton={true} onLogout={handleLogout} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-bold mb-8">Welcome "user",</h1>
-        <p className="text-gray-600 mb-8">How can we assist you today?</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Welcome {user.displayName || 'Patient'},</h1>
+          <p className="mt-2 text-gray-600">Here's your health overview</p>
+        </div>
 
-        <div className="space-y-4">
-          <button className="w-full flex items-center gap-4 p-4 bg-pink-100 text-pink-900 rounded-lg hover:bg-pink-200">
-            <div className="w-8 h-8">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-full h-full">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            Access your previous records
+        {/* Navigation Tabs */}
+        <div className="flex space-x-4 mb-8">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`px-4 py-2 rounded-md ${
+              activeTab === 'overview'
+                ? 'bg-black text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Overview
           </button>
-
-          <button className="w-full flex items-center gap-4 p-4 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200">
-            <div className="w-8 h-8">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-full h-full">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </div>
-            Talk to our Chat bot for any query
+          <button
+            onClick={() => setActiveTab('records')}
+            className={`px-4 py-2 rounded-md ${
+              activeTab === 'records'
+                ? 'bg-black text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Medical Records
           </button>
-
-          <button className="w-full flex items-center gap-4 p-4 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200">
-            <div className="w-8 h-8">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-full h-full">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-            </div>
-            Daily medication and symptom logging
-          </button>
-
-          <button className="w-full flex items-center gap-4 p-4 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200">
-            <div className="w-8 h-8">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-full h-full">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            Book an appointment with us
+          <button
+            onClick={() => setActiveTab('medications')}
+            className={`px-4 py-2 rounded-md ${
+              activeTab === 'medications'
+                ? 'bg-black text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Medications
           </button>
         </div>
 
-        <div className="mt-12">
-          <p className="text-gray-700">Do you want daily reminder for medications?</p>
-          <button className="mt-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
-            Yes
-          </button>
-        </div>
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h3 className="text-lg font-medium text-gray-900">Next Appointment</h3>
+                <p className="text-2xl font-bold text-black mt-2">Mar 24, 2024</p>
+                <p className="text-sm text-gray-500 mt-1">Follow-up with Dr. Neha</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h3 className="text-lg font-medium text-gray-900">Active Medications</h3>
+                <p className="text-2xl font-bold text-black mt-2">2</p>
+                <p className="text-sm text-gray-500 mt-1">All on schedule</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h3 className="text-lg font-medium text-gray-900">Last Checkup</h3>
+                <p className="text-2xl font-bold text-black mt-2">Feb 15, 2024</p>
+                <p className="text-sm text-gray-500 mt-1">Annual health review</p>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Upcoming Appointments</h3>
+                <div className="space-y-4">
+                  {appointments.map((appointment) => (
+                    <div key={appointment.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-gray-900">{appointment.type}</p>
+                        <p className="text-sm text-gray-500">
+                          {appointment.date} at {appointment.time}
+                        </p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(appointment.status)}`}>
+                        {appointment.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <button className="mt-4 w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                  Book New Appointment
+                </button>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Current Medications</h3>
+                <div className="space-y-4">
+                  {medications.map((medication) => (
+                    <div key={medication.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-gray-900">{medication.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {medication.dosage} - {medication.frequency}
+                        </p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(medication.status)}`}>
+                        {medication.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <button className="mt-4 w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                  View All Medications
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Medical Records Tab */}
+        {activeTab === 'records' && (
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-medium text-gray-900">Medical History</h3>
+              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                Download Records
+              </button>
+            </div>
+            <div className="space-y-4">
+              {medicalRecords.map((record) => (
+                <div key={record.id} className="border rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <p className="font-medium text-gray-900">{record.diagnosis}</p>
+                      <p className="text-sm text-gray-500">Date: {record.date}</p>
+                    </div>
+                    <p className="text-sm text-gray-500">Doctor: {record.doctor}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">
+                      <span className="font-medium">Prescription:</span> {record.prescription}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Next Visit:</span> {record.nextVisit}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Medications Tab */}
+        {activeTab === 'medications' && (
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-medium text-gray-900">Medication Schedule</h3>
+              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                Set Reminders
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Medication
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Dosage
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Frequency
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Duration
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {medications.map((medication) => (
+                    <tr key={medication.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{medication.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{medication.dosage}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{medication.frequency}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {medication.startDate} - {medication.endDate}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(medication.status)}`}>
+                          {medication.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
