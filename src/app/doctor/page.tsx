@@ -26,7 +26,7 @@ interface Appointment {
 
 export default function DoctorDashboard() {
   const router = useRouter();
-  const { user } = useAuth(); // Removed logout since it doesn't exist in useAuth
+  const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'patients' | 'appointments'>('overview');
 
   // Sample data - In a real app, this would come from an API
@@ -124,11 +124,11 @@ export default function DoctorDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation showLoginButton={false} showLogoutButton={true} onLogout={handleLogout} />
+      <Navigation showLoginButton={false} showLogoutButton={true} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Dr. {user.displayName || 'Doctor'},</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome Dr. {user.firstName || 'Doctor'},</h1>
           <p className="mt-2 text-gray-600">Here's your daily overview</p>
         </div>
 

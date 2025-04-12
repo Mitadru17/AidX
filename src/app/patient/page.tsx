@@ -107,7 +107,7 @@ export default function PatientDashboard() {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await signOut();
       router.push('/login');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -137,11 +137,11 @@ export default function PatientDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation showLoginButton={false} showLogoutButton={true} onLogout={handleLogout} />
+      <Navigation showLoginButton={false} showLogoutButton={true} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome {user.displayName || 'Patient'},</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome {user.firstName || 'Patient'},</h1>
           <p className="mt-2 text-gray-600">Here's your health overview</p>
         </div>
 

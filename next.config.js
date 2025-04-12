@@ -10,15 +10,7 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', 'vercel.app', '*.vercel.app'],
-    },
-  },
   swcMinify: true,
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
 }
 
 module.exports = nextConfig 

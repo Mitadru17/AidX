@@ -1,16 +1,6 @@
 {
-  "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "installCommand": "npm install --legacy-peer-deps",
-  "ignoreCommand": "npm audit --audit-level=critical",
   "framework": "nextjs",
-  "env": {
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}",
-    "CLERK_SECRET_KEY": "${CLERK_SECRET_KEY}",
-    "NEXT_PUBLIC_CLERK_SIGN_IN_URL": "${NEXT_PUBLIC_CLERK_SIGN_IN_URL}",
-    "NEXT_PUBLIC_CLERK_SIGN_UP_URL": "${NEXT_PUBLIC_CLERK_SIGN_UP_URL}",
-    "NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL": "${NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL}",
-    "NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL": "${NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL}",
-    "NEXT_PUBLIC_GEMINI_API_KEY": "${NEXT_PUBLIC_GEMINI_API_KEY}"
-  }
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install --legacy-peer-deps"
 } 
