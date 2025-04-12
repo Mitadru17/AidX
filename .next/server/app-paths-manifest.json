@@ -1,24 +1,8 @@
 {
-  "/_not-found": "app/_not-found.js",
-  "/about-us/page": "app/about-us/page.js",
-  "/about/page": "app/about/page.js",
-  "/doctor/dashboard/page": "app/doctor/dashboard/page.js",
-  "/doctor/appointments/page": "app/doctor/appointments/page.js",
-  "/doctor/end-of-day/page": "app/doctor/end-of-day/page.js",
-  "/doctor/page": "app/doctor/page.js",
-  "/find-us/page": "app/find-us/page.js",
-  "/doctor/patient-checkup/page": "app/doctor/patient-checkup/page.js",
-  "/doctor/emergencies/page": "app/doctor/emergencies/page.js",
-  "/doctor/previous-records/page": "app/doctor/previous-records/page.js",
   "/page": "app/page.js",
-  "/patient/appointment/page": "app/patient/appointment/page.js",
-  "/patient/dashboard/page": "app/patient/dashboard/page.js",
-  "/patient/chatbot/page": "app/patient/chatbot/page.js",
-  "/patient/dailylog/page": "app/patient/dailylog/page.js",
-  "/patient/notifications/page": "app/patient/notifications/page.js",
-  "/patient/page": "app/patient/page.js",
+  "/sign-in/[[...sign-in]]/page": "app/sign-in/[[...sign-in]]/page.js",
   "/select-role/page": "app/select-role/page.js",
-  "/patient/previous-records/page": "app/patient/previous-records/page.js",
-  "/sign-up/[[...sign-up]]/page": "app/sign-up/[[...sign-up]]/page.js",
-  "/sign-in/[[...sign-in]]/page": "app/sign-in/[[...sign-in]]/page.js"
+  "/doctor/dashboard/page": "app/doctor/dashboard/page.js",
+  "/api/gemini/route": "app/api/gemini/route.js",
+  "/doctor/adr-alerts/page": "app/doctor/adr-alerts/page.js"
 }
