@@ -7,6 +7,56 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 
+interface Patient {
+  id: string;
+  name: string;
+  age?: number;
+  gender?: string;
+  email?: string;
+  phone?: string;
+}
+
+interface Record {
+  id: string;
+  patientId: string;
+  patientName?: string;
+  date: string;
+  recordType: string;
+  doctor?: string;
+  symptoms?: string;
+  diagnosis?: string;
+  medication?: string;
+  notes?: string;
+  followUp?: string;
+  isPatientCreated?: boolean;
+  userId?: string;
+  vitals?: {
+    temperature?: string;
+    bloodPressure?: string;
+    heartRate?: string;
+    respiratoryRate?: string;
+    oxygenSaturation?: string;
+  };
+}
+
+interface MedicationLog {
+  id: string;
+  patientId?: string;
+  userId?: string;
+  patientName?: string;
+  medication: string;
+  medicine?: string;
+  reason?: string;
+  date?: string;
+  dosage?: string;
+  frequency?: string;
+  startDate?: string;
+  endDate?: string;
+  notes?: string;
+  reminderTime?: string;
+  isActive?: boolean;
+}
+
 export default function DoctorPreviousRecords() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
@@ -14,16 +64,16 @@ export default function DoctorPreviousRecords() {
   const [mounted, setMounted] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [patientFilter, setPatientFilter] = useState('');
-  const [records, setRecords] = useState<any[]>([]);
-  const [patients, setPatients] = useState<any[]>([]);
+  const [records, setRecords] = useState<Record[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState('records');
-  const [medicationLogs, setMedicationLogs] = useState<any[]>([]);
+  const [medicationLogs, setMedicationLogs] = useState<MedicationLog[]>([]);
 
   // Generate sample patient data for demonstration
-  const generateSamplePatients = () => {
+  const generateSamplePatients = (): Patient[] => {
     return [
       { id: 'pat_1', name: 'John Doe', age: 45, gender: 'Male' },
       { id: 'pat_2', name: 'Jane Smith', age: 32, gender: 'Female' },
@@ -35,8 +85,8 @@ export default function DoctorPreviousRecords() {
   };
 
   // Generate sample records with patient information
-  const generateAllRecords = (patientsList: any[]) => {
-    let allRecords: any[] = [];
+  const generateAllRecords = (patientsList: Patient[]): Record[] => {
+    let allRecords: Record[] = [];
     
     patientsList.forEach(patient => {
       // Generate 1-3 records per patient
@@ -71,7 +121,7 @@ export default function DoctorPreviousRecords() {
     });
     
     // Sort by date (most recent first)
-    return allRecords.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return allRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   };
 
   useEffect(() => {
@@ -92,9 +142,9 @@ export default function DoctorPreviousRecords() {
           const patientDailyLogs = localStorage.getItem('patientDailyLogs');
           const patientMedicineLogs = localStorage.getItem('patientMedicineLogs');
           
-          let allRecords = [];
-          let patientsList = [];
-          let medicineLogs = [];
+          let allRecords: Record[] = [];
+          let patientsList: Patient[] = [];
+          let medicineLogs: MedicationLog[] = [];
           
           if (storedRecords && storedPatients) {
             patientsList = JSON.parse(storedPatients);
