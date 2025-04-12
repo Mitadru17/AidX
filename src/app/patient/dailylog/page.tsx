@@ -393,6 +393,21 @@ export default function DailyLog() {
     setLoading(true);
     
     try {
+      // Log user info for debugging
+      console.log('Current user:', {
+        id: user?.id,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        fullName: user?.fullName
+      });
+      
+      // Make sure we have the patient name
+      const patientName = user?.fullName || 
+                         `${user?.firstName || ''} ${user?.lastName || ''}` || 
+                         'Mitadru';
+                         
+      console.log('Using patient name:', patientName);
+      
       // Get existing logs
       const existingLogsJSON = localStorage.getItem('patientDailyLogs') || '[]';
       const existingLogs = JSON.parse(existingLogsJSON);
@@ -412,7 +427,10 @@ export default function DailyLog() {
               date, // Update date
               medicationTaken: selectedMedicines,
               aiSuggestion: suggestion,
-              lastUpdated: new Date().toISOString()
+              lastUpdated: new Date().toISOString(),
+              patientName: patientName, // Ensure name is updated
+              userId: user?.id,
+              patientId: user?.id
             };
           }
           return log;
@@ -429,8 +447,16 @@ export default function DailyLog() {
           medicationTaken: selectedMedicines,
           aiSuggestion: suggestion,
           createdAt: new Date().toISOString(),
-          userId: user?.id
+          userId: user?.id,
+          patientName: patientName,
+          patientId: user?.id
         };
+        
+        console.log('Creating new log entry with patient info:', {
+          patientName: logEntry.patientName,
+          patientId: logEntry.patientId,
+          userId: logEntry.userId
+        });
         
         // Save to localStorage
         existingLogs.push(logEntry);
@@ -465,8 +491,15 @@ export default function DailyLog() {
           date,
           reason: symptoms,
           createdAt: new Date().toISOString(),
-          userId: user?.id
+          userId: user?.id,
+          patientName: patientName,
+          patientId: user?.id
         }));
+        
+        console.log('Creating new medicine logs with patient info:', {
+          patientName: patientName,
+          count: newMedicineLogs.length
+        });
         
         // Save updated medicine logs
         localStorage.setItem('patientMedicineLogs', JSON.stringify([...existingMedicineLogs, ...newMedicineLogs]));

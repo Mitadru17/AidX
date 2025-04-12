@@ -4,14 +4,12 @@
 
 /* Chatbot animations */
 @keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
+  from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 .animate-slideUp {
-  animation-name: slideUp;
-  animation-duration: 0.3s;
-  animation-fill-mode: both;
+  animation: slideUp 0.3s ease-out;
 }
 
 /* Typing indicator animation */
@@ -83,9 +81,7 @@
 }
 
 .animate-fadeIn {
-  animation-name: fadeIn;
-  animation-duration: 0.3s;
-  animation-fill-mode: both;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .animate-slideIn {

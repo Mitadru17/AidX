@@ -97,11 +97,91 @@ export default function PreviousRecords() {
       router.push('/');
     }
     
-    // Fetch patient records when user is loaded
     if (isLoaded && user) {
-      console.log('User loaded, fetching records and reminders');
-      fetchPatientRecords();
-      fetchDailyHealthLogs();
+      // Add patientName to existing records if missing
+      const updateRecordsWithPatientName = () => {
+        try {
+          const recordsJSON = localStorage.getItem('patientRecords');
+          if (recordsJSON) {
+            const records = JSON.parse(recordsJSON);
+            let needsUpdate = false;
+            
+            // Check if any records are missing patient name
+            const updatedRecords = records.map((record: any) => {
+              if (!record.patientName && record.patientId === user.id) {
+                needsUpdate = true;
+                return {
+                  ...record,
+                  patientName: user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`,
+                };
+              }
+              return record;
+            });
+            
+            // Save updated records if changes were made
+            if (needsUpdate) {
+              localStorage.setItem('patientRecords', JSON.stringify(updatedRecords));
+              console.log('Updated patient records with missing patient names');
+            }
+            
+            setPatientRecords(updatedRecords);
+          } else {
+            // Generate initial records
+            const initialRecords = generateSampleRecordsForUser(user.id);
+            
+            // Add patient name to all records
+            const recordsWithName = initialRecords.map(record => ({
+              ...record,
+              patientName: user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`,
+            }));
+            
+            setPatientRecords(recordsWithName);
+            localStorage.setItem('patientRecords', JSON.stringify(recordsWithName));
+          }
+        } catch (error) {
+          console.error('Error loading records:', error);
+          toast.error('Failed to load medical records');
+        }
+      };
+      
+      // Check and update daily logs with patient name
+      const updateLogsWithPatientName = () => {
+        try {
+          const logsJSON = localStorage.getItem('patientDailyLogs');
+          if (logsJSON) {
+            const logs = JSON.parse(logsJSON);
+            let needsUpdate = false;
+            
+            // Check if any logs are missing patient name
+            const updatedLogs = logs.map((log: any) => {
+              if (!log.patientName && (log.userId === user.id || !log.userId)) {
+                needsUpdate = true;
+                return {
+                  ...log,
+                  patientName: user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`,
+                  patientId: user.id
+                };
+              }
+              return log;
+            });
+            
+            // Save updated logs if changes were made
+            if (needsUpdate) {
+              localStorage.setItem('patientDailyLogs', JSON.stringify(updatedLogs));
+              console.log('Updated daily logs with missing patient names');
+            }
+            
+            setDailyHealthLogs(updatedLogs);
+          } else {
+            setDailyHealthLogs([]);
+          }
+        } catch (error) {
+          console.error('Error loading health logs:', error);
+        }
+      };
+      
+      updateRecordsWithPatientName();
+      updateLogsWithPatientName();
       
       // Check if there's a tab parameter in the URL
       const urlParams = new URLSearchParams(window.location.search);

@@ -97,14 +97,18 @@ export default function DoctorDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Previous Records */}
-          <button className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
+          <Link
+            href="/doctor/previous-records"
+            className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn" 
+            style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+          >
             <div className="w-16 h-16 mb-4 transition-transform duration-300 group-hover:rotate-6">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-full h-full transition-transform duration-300 hover:scale-110">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <span className="text-xl text-center">Access your previous records of patients</span>
-          </button>
+          </Link>
 
           {/* Patient Details Entry - Update this button to link to the patient-checkup page */}
           <Link
@@ -148,14 +152,17 @@ export default function DoctorDashboard() {
           </Link>
 
           {/* End of Day Report */}
-          <button className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn col-span-2" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}>
+          <Link
+            href="/doctor/end-of-day"
+            className="flex flex-col items-center p-8 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transform opacity-0 animate-slideIn col-span-2" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}
+          >
             <div className="w-16 h-16 mb-4 transition-transform duration-300 group-hover:rotate-6">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-full h-full transition-transform duration-300 hover:scale-110">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <span className="text-xl text-center">End of day report(print)</span>
-          </button>
+          </Link>
         </div>
       </main>
 

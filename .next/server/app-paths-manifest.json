@@ -1,6 +1,9 @@
 {
   "/patient/chatbot/page": "app/patient/chatbot/page.js",
+  "/doctor/dashboard/page": "app/doctor/dashboard/page.js",
+  "/doctor/previous-records/page": "app/doctor/previous-records/page.js",
+  "/patient/previous-records/page": "app/patient/previous-records/page.js",
+  "/doctor/end-of-day/page": "app/doctor/end-of-day/page.js",
   "/page": "app/page.js",
-  "/patient/dashboard/page": "app/patient/dashboard/page.js",
   "/select-role/page": "app/select-role/page.js"
 }
