@@ -1,8 +1,8 @@
 {
   "/page": "app/page.js",
   "/sign-in/[[...sign-in]]/page": "app/sign-in/[[...sign-in]]/page.js",
+  "/find-us/page": "app/find-us/page.js",
   "/select-role/page": "app/select-role/page.js",
-  "/doctor/dashboard/page": "app/doctor/dashboard/page.js",
-  "/api/gemini/route": "app/api/gemini/route.js",
-  "/doctor/adr-alerts/page": "app/doctor/adr-alerts/page.js"
+  "/patient/dashboard/page": "app/patient/dashboard/page.js",
+  "/patient/chatbot/page": "app/patient/chatbot/page.js"
 }
