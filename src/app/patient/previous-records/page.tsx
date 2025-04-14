@@ -705,7 +705,7 @@ export default function PreviousRecords() {
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
                                   <div className="flex-shrink-0 h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-medium">
-                                    {record.doctor.split(' ').map(name => name[0]).join('')}
+                                    {record.doctor.split(' ').map((name: string) => name[0]).join('')}
                                   </div>
                                   <div className="ml-3 text-sm text-gray-900">{record.doctor}</div>
                                 </div>
@@ -1020,7 +1020,7 @@ export default function PreviousRecords() {
                     </div>
                     <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 flex items-center">
                       <div className="w-16 h-16 rounded-full overflow-hidden mr-4 bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
-                        {selectedRecord.doctor.split(' ').map(name => name[0]).join('')}
+                        {selectedRecord.doctor.split(' ').map((name: string) => name[0]).join('')}
                       </div>
                       <div>
                         <p className="text-base font-medium text-gray-900">{selectedRecord.doctor}</p>
