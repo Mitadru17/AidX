@@ -8,11 +8,16 @@ interface Notification {
   type: string;
   message: string;
   appointmentId?: string;
+  alertId?: string;
   date: string;
   read: boolean;
 }
 
-export default function NotificationBell() {
+interface NotificationBellProps {
+  className?: string;
+}
+
+export default function NotificationBell({ className = '' }: NotificationBellProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   
@@ -58,7 +63,7 @@ export default function NotificationBell() {
   const unreadCount = notifications.filter(n => !n.read).length;
   
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-700 hover:text-black transition-colors"
@@ -111,6 +116,8 @@ export default function NotificationBell() {
                           ${notification.type === 'appointment_cancelled' ? 'bg-red-500' : ''}
                           ${notification.type === 'appointment_notes' ? 'bg-purple-500' : ''}
                           ${notification.type === 'emergency_response' ? 'bg-red-600' : ''}
+                          ${notification.type === 'adr_alert' ? 'bg-orange-500' : ''}
+                          ${notification.type === 'medication_reminder' ? 'bg-amber-500' : ''}
                         `}
                       ></div>
                       <div className="flex-1">
@@ -118,6 +125,21 @@ export default function NotificationBell() {
                         <p className="text-xs text-gray-500 mt-1">
                           {new Date(notification.date).toLocaleString()}
                         </p>
+                        {notification.type === 'adr_alert' && notification.alertId && (
+                          <div className="mt-2">
+                            <Link
+                              href={`/patient/adr/${notification.alertId}`}
+                              className="text-xs text-blue-600 hover:text-blue-800 inline-flex items-center"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              View details
+                            </Link>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

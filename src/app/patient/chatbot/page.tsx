@@ -29,6 +29,13 @@ export default function PatientChatbot() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [suggestedQuestions] = useState([
+    "What should I do about a fever?",
+    "How can I manage my headache?",
+    "What are common cold remedies?",
+    "Tips for reducing anxiety?",
+    "How much exercise is recommended daily?"
+  ]);
   
   // Use the provided Gemini API key
   const GEMINI_API_KEY = 'AIzaSyC-KcSv3Ibp9NCkwubA7UMmAFSeH-2EvIA';
@@ -76,6 +83,10 @@ export default function PatientChatbot() {
   const handleSignOut = async () => {
     await signOut();
     router.push('/');
+  };
+
+  const handleSuggestedQuestion = (question: string) => {
+    setInput(question);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -254,26 +265,41 @@ User's message: ${input}`
   };
 
   if (!isLoaded || !user) {
-    return <div className="animate-pulse">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-16 h-16 bg-blue-200 rounded-full mb-4"></div>
+          <div className="h-4 w-24 bg-blue-200 rounded"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className={`min-h-screen flex flex-col bg-white transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`min-h-screen flex flex-col bg-gradient-to-b from-white to-blue-50 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
       {/* Navigation */}
-      <nav className="py-4 px-6 flex justify-between items-center border-b backdrop-blur-sm bg-white/80 sticky top-0 z-50 transition-all duration-300">
-        <Link href="/patient/dashboard" className="text-xl font-semibold transform transition-transform duration-300 hover:scale-105">
-          AidX
+      <nav className="py-4 px-6 flex justify-between items-center fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-md">
+        <Link href="/patient/dashboard" className="flex items-center gap-2 transition-transform hover:scale-105">
+          <div className="relative w-10 h-10">
+            <Image
+              src="/logo.png"
+              alt="AidX Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <span className="text-xl font-semibold bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent">AidX Health</span>
         </Link>
         <div className="flex items-center gap-6">
           <Link 
             href="/patient/dashboard" 
-            className="text-gray-600 hover:text-gray-900 transition-all duration-300 hover:-translate-y-1"
+            className="text-gray-700 hover:text-blue-600 transition-colors hover:-translate-y-0.5 duration-200 transform"
           >
             Dashboard
           </Link>
           <button
             onClick={handleSignOut}
-            className="px-4 py-2 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
+            className="px-4 py-2 bg-white text-red-600 border-2 border-red-500 rounded-lg hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 transform hover:bg-red-50"
           >
             Logout
           </button>
@@ -281,88 +307,184 @@ User's message: ${input}`
       </nav>
 
       {/* Chat Interface */}
-      <div className="flex-1 flex flex-col max-w-4xl w-full mx-auto">
-        {/* Chat Header */}
-        <div className="p-4 bg-black text-white flex items-center">
-          <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden">
-              <Image
-                src="/logo.png"
-                alt="AidX Assistant"
-                fill
-                sizes="40px"
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div>
-              <h1 className="font-medium text-lg">AidX Healthcare Assistant</h1>
-              <p className="text-xs text-gray-300">Ask me anything about your health</p>
+      <div className="pt-24 flex-1 flex flex-col max-w-5xl w-full mx-auto px-4 pb-6">
+        {/* Chat Container */}
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-[calc(100vh-8rem)] border border-gray-200">
+          {/* Chat Header */}
+          <div className="p-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+            <div className="flex items-center gap-4">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white p-2 shadow-md">
+                <Image
+                  src="/logo.png"
+                  alt="AidX Assistant"
+                  fill
+                  sizes="48px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <div>
+                <h1 className="font-semibold text-xl">Medical Assistant</h1>
+                <div className="flex items-center">
+                  <span className="h-2 w-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                  <p className="text-sm text-blue-100">Online | Powered by AI</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* Chat Messages */}
-        <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`mb-6 max-w-[80%] ${
-                message.sender === 'user' ? 'ml-auto' : 'mr-auto'
-              }`}
-            >
-              <div
-                className={`p-4 rounded-lg ${
-                  message.sender === 'user'
-                    ? 'bg-black text-white rounded-tr-none'
-                    : 'bg-gray-200 text-gray-800 rounded-tl-none'
-                }`}
-              >
-                {message.text}
-              </div>
-              <div
-                className={`text-xs mt-1 text-gray-500 ${
-                  message.sender === 'user' ? 'text-right' : 'text-left'
-                }`}
-              >
-                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </div>
+          
+          {/* Chat Messages */}
+          <div className="flex-1 p-4 md:p-6 overflow-y-auto bg-gradient-to-b from-gray-50 to-white scroll-smooth">
+            <div className="max-w-3xl mx-auto space-y-6">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`animate-fadeIn ${
+                    message.sender === 'user' ? 'flex justify-end' : 'flex justify-start'
+                  }`}
+                  style={{ animationDuration: '0.3s' }}
+                >
+                  <div className={`max-w-[85%] ${
+                    message.sender === 'user' ? 'order-1' : 'order-2'
+                  }`}>
+                    <div
+                      className={`p-4 rounded-2xl shadow-sm ${
+                        message.sender === 'user'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-tr-none'
+                          : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none'
+                      }`}
+                    >
+                      {message.text}
+                    </div>
+                    <div
+                      className={`text-xs mt-1 text-gray-500 flex items-center ${
+                        message.sender === 'user' ? 'justify-end' : 'justify-start'
+                      }`}
+                    >
+                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {message.sender === 'user' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className={`w-8 h-8 rounded-full flex-shrink-0 overflow-hidden ${
+                    message.sender === 'user' ? 'order-2 ml-2' : 'order-1 mr-2'
+                  }`}>
+                    {message.sender === 'user' ? (
+                      <div className="w-full h-full bg-blue-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-700" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="relative w-full h-full bg-white">
+                        <Image
+                          src="/logo.png"
+                          alt="AidX Assistant"
+                          fill
+                          sizes="32px"
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              {isLoading && (
+                <div className="flex justify-start animate-fadeIn" style={{ animationDuration: '0.3s' }}>
+                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mr-2">
+                    <div className="relative w-full h-full bg-white">
+                      <Image
+                        src="/logo.png"
+                        alt="AidX Assistant"
+                        fill
+                        sizes="32px"
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                  <div className="max-w-[85%]">
+                    <div className="p-4 rounded-2xl rounded-tl-none bg-white border border-gray-200 shadow-sm text-gray-800">
+                      <div className="flex space-x-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce"></div>
+                        <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-          ))}
-          {isLoading && (
-            <div className="mb-6 max-w-[80%] mr-auto">
-              <div className="p-4 rounded-lg bg-gray-200 text-gray-800 rounded-tl-none flex items-center">
-                <div className="dot-flashing"></div>
+          </div>
+          
+          {/* Suggested Questions */}
+          {messages.length < 3 && (
+            <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
+              <p className="text-sm text-gray-500 mb-2">Suggested questions:</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestedQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSuggestedQuestion(question)}
+                    className="px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-full text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-colors"
+                  >
+                    {question}
+                  </button>
+                ))}
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
+          
+          {/* Chat Input */}
+          <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 bg-white">
+            <div className="flex shadow-sm rounded-xl overflow-hidden border border-gray-300 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask a health question..."
+                className="flex-1 py-3 px-4 border-0 focus:outline-none focus:ring-0 text-gray-700"
+                disabled={isLoading}
+              />
+              <button
+                type="submit"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 disabled:from-gray-400 disabled:to-gray-500 flex items-center"
+                disabled={isLoading || !input.trim()}
+              >
+                {isLoading ? (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <>
+                    <span className="mr-2">Send</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11h2v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">This AI assistant provides general information only. For medical emergencies, call your local emergency number.</p>
+          </form>
         </div>
-        
-        {/* Chat Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 bg-white">
-          <div className="flex shadow-sm rounded-lg overflow-hidden">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 py-3 px-4 border-0 focus:outline-none focus:ring-0"
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              className="bg-black text-white py-3 px-6 hover:bg-gray-800 transition-colors disabled:bg-gray-400 flex items-center"
-              disabled={isLoading || !input.trim()}
-            >
-              <span className="mr-2">Send</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11h2v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-              </svg>
-            </button>
-          </div>
-        </form>
       </div>
+
+      {/* CSS Animations */}
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 } 

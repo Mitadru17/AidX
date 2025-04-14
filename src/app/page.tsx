@@ -154,7 +154,7 @@ export default function Home() {
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-gray-50 to-sky-50 pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="max-w-xl animate-fadeIn" style={{ animationDuration: '1s' }}>
               <span className="inline-block px-3 py-1 mb-4 text-blue-600 bg-blue-50 rounded-full text-sm font-medium">Advanced Healthcare</span>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
@@ -178,7 +178,7 @@ export default function Home() {
                   <SignUpButton afterSignUpUrl="/select-role">
                     <button className="px-6 py-3 bg-white text-blue-700 border-2 border-blue-600 rounded-lg hover:shadow-md transition-all duration-300 hover:-translate-y-1 transform text-lg">
                       Get Started
-                    </button>
+            </button>
                   </SignUpButton>
                 )}
               </div>
@@ -207,13 +207,13 @@ export default function Home() {
                   <p className="text-sm text-gray-600">From 500+ patient reviews</p>
                 </div>
               </div>
-            </div>
+          </div>
             
             <div className="relative h-[500px] animate-slideInRight" style={{ animationDuration: '1s', animationDelay: '0.2s', animationFillMode: 'both' }}>
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/20 to-blue-700/20 rounded-xl -rotate-3 transform"></div>
               <div className="absolute inset-0 rounded-xl overflow-hidden rotate-3 shadow-xl transform transition-all hover:rotate-0 duration-500">
-                <Image
-                  src="/doctor-image.jpg"
+            <Image
+              src="/doctor-image.jpg"
                   alt="Dr. Neha Sharma"
                   fill
                   style={{ objectFit: 'cover' }}
@@ -253,7 +253,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-block px-3 py-1 mb-4 text-blue-600 bg-blue-50 rounded-full text-sm font-medium">Our Services</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Comprehensive Healthcare Services</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Comprehensive Healthcare Services</h2>
             <p className="text-gray-600 text-lg">We provide a wide range of medical services to meet your healthcare needs with personalized attention and care.</p>
           </div>
           
@@ -261,14 +261,20 @@ export default function Home() {
             {services.map((service, index) => (
               <div 
                 key={index} 
-                className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-2 transform"
+                className="p-8 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 transform animate-slideInUp"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
-                <div className="w-16 h-16 bg-blue-50 rounded-lg flex items-center justify-center mb-6 text-blue-600">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center mb-6 text-white">
                   {service.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                <p className="text-gray-600">{service.description}</p>
+                <p className="text-gray-600 mb-4">{service.description}</p>
+                <a href="#" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                  Learn more
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </a>
               </div>
             ))}
           </div>
@@ -279,32 +285,32 @@ export default function Home() {
       <div className="py-16 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div className="p-6">
+            <div className="p-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
               <div className="text-4xl md:text-5xl font-bold mb-2">15+</div>
               <p className="text-blue-100">Years Experience</p>
             </div>
-            <div className="p-6">
+            <div className="p-6 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
               <div className="text-4xl md:text-5xl font-bold mb-2">5000+</div>
               <p className="text-blue-100">Patients Treated</p>
             </div>
-            <div className="p-6">
+            <div className="p-6 animate-fadeIn" style={{ animationDelay: '0.5s' }}>
               <div className="text-4xl md:text-5xl font-bold mb-2">99%</div>
               <p className="text-blue-100">Patient Satisfaction</p>
             </div>
-            <div className="p-6">
+            <div className="p-6 animate-fadeIn" style={{ animationDelay: '0.7s' }}>
               <div className="text-4xl md:text-5xl font-bold mb-2">24/7</div>
               <p className="text-blue-100">Patient Support</p>
             </div>
           </div>
+          </div>
         </div>
-      </div>
 
-      {/* Reviews Section */}
+        {/* Reviews Section */}
       <div className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-block px-3 py-1 mb-4 text-blue-600 bg-blue-50 rounded-full text-sm font-medium">Testimonials</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">What Our Patients Say</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">What Our Patients Say</h2>
             <p className="text-gray-600 text-lg">Discover why patients trust us with their healthcare needs.</p>
           </div>
           
@@ -312,7 +318,7 @@ export default function Home() {
             {reviews.map((review, index) => (
               <div 
                 key={index} 
-                className="p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                className="p-8 bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 transform animate-slideInUp"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className="flex mb-4">
@@ -324,7 +330,7 @@ export default function Home() {
                 </div>
                 <p className="text-gray-700 mb-6 italic">&ldquo;{review.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12">
+                  <div className="relative w-12 h-12 border-2 border-blue-600 rounded-full p-0.5">
                     <Image
                       src={`https://i.pravatar.cc/96?img=${index + 20}`}
                       alt={`${review.author}'s photo`}
@@ -335,33 +341,39 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">{review.author}</p>
-                    <p className="text-sm text-gray-600">{review.role}</p>
+                    <p className="text-sm text-blue-600">{review.role}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          </div>
         </div>
-      </div>
 
-      {/* CTA Section */}
+        {/* CTA Section */}
       <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl overflow-hidden shadow-xl">
+          <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl overflow-hidden shadow-xl animate-fadeIn">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="p-10 md:p-16 flex flex-col justify-center">
+              <div className="p-10 md:p-16 flex flex-col justify-center animate-slideInLeft" style={{ animationDelay: '0.2s' }}>
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white leading-tight">Ready to experience better healthcare?</h2>
                 <p className="text-blue-100 text-lg mb-8">Book an appointment today and take the first step towards improving your health with personalized care from our expert team.</p>
                 <div className="flex flex-wrap gap-4">
                   {!isSignedIn ? (
                     <>
                       <SignInButton afterSignInUrl="/select-role">
-                        <button className="px-6 py-3 bg-white text-blue-700 text-lg rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-1 transform">
+                        <button className="px-6 py-3 bg-white text-blue-700 text-lg font-medium rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-1 transform flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
                           Login
                         </button>
                       </SignInButton>
                       <SignUpButton afterSignUpUrl="/select-role">
-                        <button className="px-6 py-3 bg-transparent text-white text-lg border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 transform">
+                        <button className="px-6 py-3 bg-transparent text-white text-lg font-medium border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 transform flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                          </svg>
                           Sign-up
                         </button>
                       </SignUpButton>
@@ -370,27 +382,34 @@ export default function Home() {
                     <>
                       <button
                         onClick={() => router.push('/select-role')}
-                        className="px-6 py-3 bg-white text-blue-700 text-lg rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-1 transform"
+                        className="px-6 py-3 bg-white text-blue-700 text-lg font-medium rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-1 transform flex items-center gap-2"
                       >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
                         Go to Dashboard
                       </button>
                       <button
                         onClick={() => signOut()}
-                        className="px-6 py-3 bg-transparent text-white text-lg border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 transform"
+                        className="px-6 py-3 bg-transparent text-white text-lg font-medium border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 transform flex items-center gap-2"
                       >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+                        </svg>
                         Logout
                       </button>
                     </>
                   )}
                 </div>
               </div>
-              <div className="relative h-[400px] md:h-auto">
+              <div className="relative h-[400px] md:h-auto animate-slideInRight" style={{ animationDelay: '0.4s' }}>
                 <Image
                   src="/doctor-patient-consultation.jpg"
                   alt="Doctor consultation"
                   fill
                   style={{ objectFit: 'cover' }}
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent mix-blend-overlay"></div>
               </div>
             </div>
           </div>

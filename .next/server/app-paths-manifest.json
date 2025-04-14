@@ -1,8 +1,7 @@
 {
+  "/patient/dailylog/page": "app/patient/dailylog/page.js",
   "/page": "app/page.js",
-  "/sign-in/[[...sign-in]]/page": "app/sign-in/[[...sign-in]]/page.js",
-  "/find-us/page": "app/find-us/page.js",
   "/select-role/page": "app/select-role/page.js",
-  "/patient/dashboard/page": "app/patient/dashboard/page.js",
-  "/patient/chatbot/page": "app/patient/chatbot/page.js"
+  "/doctor/dashboard/page": "app/doctor/dashboard/page.js",
+  "/doctor/adr-alerts/page": "app/doctor/adr-alerts/page.js"
 }

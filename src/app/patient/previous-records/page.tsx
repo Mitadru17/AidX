@@ -543,11 +543,11 @@ export default function PreviousRecords() {
   }
 
   return (
-    <div className={`min-h-screen bg-white transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`min-h-screen bg-gradient-to-b from-white to-gray-50 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
       {/* Navigation */}
-      <nav className="py-4 px-6 flex justify-between items-center border-b backdrop-blur-sm bg-white/80 sticky top-0 z-50 transition-all duration-300">
+      <nav className="py-4 px-6 flex justify-between items-center border-b backdrop-blur-sm bg-white/90 sticky top-0 z-50 transition-all duration-300 shadow-sm">
         <Link href="/" className="text-xl font-semibold transform transition-transform duration-300 hover:scale-105">
-          AidX
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-black">AidX</span>
         </Link>
         <div className="flex items-center gap-6">
           <Link 
@@ -564,40 +564,40 @@ export default function PreviousRecords() {
           </Link>
           <button
             onClick={() => router.push('/patient/dashboard')}
-            className="px-4 py-2 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
           >
             Back to Dashboard
           </button>
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 animate-fadeIn" style={{ animationDuration: '0.5s' }}>
-        <div className="flex flex-col items-center mb-8">
-          <div className="border border-gray-300 p-6 inline-block mb-4 rounded-full bg-gray-50 shadow-sm transform transition-all duration-300 hover:scale-105 hover:shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-16 h-16">
+      <main className="max-w-6xl mx-auto px-4 py-8 animate-fadeIn" style={{ animationDuration: '0.5s' }}>
+        <div className="flex flex-col items-center mb-10">
+          <div className="border border-blue-200 p-6 inline-block mb-6 rounded-full bg-gradient-to-r from-blue-50 to-white shadow-md transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-16 h-16 text-blue-600">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-2">YOUR MEDICAL RECORDS</h1>
+            <h1 className="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-black">YOUR MEDICAL RECORDS</h1>
             <p className="text-gray-600 mb-6 max-w-xl mx-auto">View your complete medical history, track your progress, and access all your past records in one place.</p>
           </div>
           
-          {/* Medication Reminder Count */}
+          {/* Medication Reminder Count - Enhanced UI */}
           {Object.keys(medicationReminders).filter(id => medicationReminders[id]).length > 0 && (
             <div className="mb-6 flex justify-center">
               <div 
                 onClick={() => setActiveTab('medications')}
-                className="bg-amber-50 border border-amber-200 rounded-lg py-3 px-6 flex items-center gap-3 cursor-pointer hover:bg-amber-100 transition-colors"
+                className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-lg py-3 px-6 flex items-center gap-3 cursor-pointer hover:shadow-md transition-all duration-300 group"
               >
-                <div className="bg-amber-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
+                <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-sm shadow-sm">
                   {Object.keys(medicationReminders).filter(id => medicationReminders[id]).length}
                 </div>
                 <div>
                   <p className="font-medium text-amber-800">Active Medication Reminders</p>
                   <p className="text-xs text-amber-700">Click to view and manage your reminders</p>
                 </div>
-                <div className="ml-2">
+                <div className="ml-2 transform transition-transform duration-300 group-hover:translate-x-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
@@ -607,14 +607,14 @@ export default function PreviousRecords() {
           )}
         </div>
 
-        {/* Tabs */}
-        <div className="mb-6 flex justify-center">
-          <div className="bg-gray-100 p-1 rounded-lg inline-flex">
+        {/* Improved Tabs */}
+        <div className="mb-8 flex justify-center">
+          <div className="bg-gray-100 p-1 rounded-lg inline-flex shadow-sm">
             <button
               onClick={() => setActiveTab('records')}
-              className={`px-4 py-2 rounded-md transition-all duration-300 ${
+              className={`px-5 py-2 rounded-md transition-all duration-300 ${
                 activeTab === 'records' 
-                  ? 'bg-white shadow-sm text-black'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-800 shadow-md text-white'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -622,9 +622,9 @@ export default function PreviousRecords() {
             </button>
             <button
               onClick={() => setActiveTab('medications')}
-              className={`px-4 py-2 rounded-md transition-all duration-300 ${
+              className={`px-5 py-2 rounded-md transition-all duration-300 ${
                 activeTab === 'medications' 
-                  ? 'bg-white shadow-sm text-black'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-800 shadow-md text-white'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -633,16 +633,19 @@ export default function PreviousRecords() {
           </div>
         </div>
 
-        {/* Search and Controls */}
+        {/* Search and Controls with improved UI */}
         {activeTab === 'records' && (
-          <div className="mb-6">
+          <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Medical Records</h2>
+              <h2 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-black">Medical Records</h2>
               {filteredRecords.length > 0 && (
                 <button
                   onClick={clearAllMedicalRecords}
-                  className="text-sm text-red-600 hover:text-red-800 hover:underline"
+                  className="text-sm text-red-600 hover:text-red-800 hover:underline flex items-center"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
                   Clear All Records
                 </button>
               )}
@@ -650,12 +653,12 @@ export default function PreviousRecords() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search records..."
+                placeholder="Search by date, doctor, diagnosis, etc..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                className="w-full p-4 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-300 hover:shadow-md"
               />
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
@@ -672,45 +675,68 @@ export default function PreviousRecords() {
             ) : (
               <>
                 {filteredRecords.length > 0 ? (
-                  <div className="bg-white rounded-lg shadow-sm overflow-hidden border">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredRecords.map((record) => (
-                          <tr key={record.id} className="hover:bg-gray-50 transition-colors">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.date}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{record.recordType}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dr. Neha Sharma</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.diagnosis || 'N/A'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <button 
-                                onClick={() => openRecordDetails(record)}
-                                className="text-black hover:text-gray-700 transition-colors px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200"
-                              >
-                                View Details
-                              </button>
-                            </td>
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gradient-to-r from-blue-50 to-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                            <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
+                            <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {filteredRecords.map((record) => (
+                            <tr key={record.id} className="hover:bg-blue-50 transition-colors">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">{record.date}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                  ${record.recordType === 'Annual Checkup' ? 'bg-green-100 text-green-800' : 
+                                   record.recordType === 'Follow-up' ? 'bg-blue-100 text-blue-800' : 
+                                   record.recordType === 'Emergency' ? 'bg-red-100 text-red-800' : 
+                                   'bg-purple-100 text-purple-800'}`}>
+                                  {record.recordType}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-medium">
+                                    {record.doctor.split(' ').map(name => name[0]).join('')}
+                                  </div>
+                                  <div className="ml-3 text-sm text-gray-900">{record.doctor}</div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="text-sm text-gray-900 max-w-xs truncate">{record.diagnosis || 'N/A'}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button 
+                                  onClick={() => openRecordDetails(record)}
+                                  className="text-blue-600 hover:text-blue-900 transition-colors px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg"
+                                >
+                                  View Details
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+                  <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-gray-200">
                     <div className="mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mx-auto text-gray-400">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                      </svg>
+                      <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-medium mb-2">No Medical Records Found</h3>
+                    <h3 className="text-xl font-medium mb-2 text-gray-800">No Medical Records Found</h3>
                     <p className="text-gray-600 mb-4">You don't have any medical records in the system yet.</p>
                     <p className="text-gray-500 text-sm">Records will appear here after your doctor visits.</p>
                   </div>
@@ -931,13 +957,13 @@ export default function PreviousRecords() {
 
       {/* Record Details Modal */}
       {showModal && selectedRecord && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto animate-fadeIn">
-          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
-            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 overflow-y-auto animate-fadeIn backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4 flex justify-between items-center text-white">
               <h3 className="text-xl font-bold">Medical Record Details</h3>
               <button 
                 onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-white hover:text-gray-200 transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -945,61 +971,111 @@ export default function PreviousRecords() {
               </button>
             </div>
             
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold mb-2">Patient Information</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm"><span className="font-medium">Name:</span> {selectedRecord.patientName || user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`}</p>
-                      <p className="text-sm mt-1"><span className="font-medium">Date:</span> {selectedRecord.date}</p>
-                      <p className="text-sm mt-1"><span className="font-medium">Record Type:</span> {selectedRecord.recordType}</p>
+                  <div className="mb-8">
+                    <div className="flex items-center mb-3">
+                      <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-semibold text-gray-800">Patient Information</h4>
+                    </div>
+                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                      <p className="mb-2">
+                        <span className="font-medium text-gray-700">Name:</span> 
+                        <span className="ml-2 text-gray-900">{selectedRecord.patientName || user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`}</span>
+                      </p>
+                      <p className="mb-2">
+                        <span className="font-medium text-gray-700">Date:</span> 
+                        <span className="ml-2 text-gray-900">{new Date(selectedRecord.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}</span>
+                      </p>
+                      <p>
+                        <span className="font-medium text-gray-700">Record Type:</span> 
+                        <span className={`ml-2 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                          ${selectedRecord.recordType === 'Annual Checkup' ? 'bg-green-100 text-green-800' : 
+                           selectedRecord.recordType === 'Follow-up' ? 'bg-blue-100 text-blue-800' : 
+                           selectedRecord.recordType === 'Emergency' ? 'bg-red-100 text-red-800' : 
+                           'bg-purple-100 text-purple-800'}`}>
+                          {selectedRecord.recordType}
+                        </span>
+                      </p>
                     </div>
                   </div>
                   
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold mb-2">Attending Physician</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg flex items-center">
-                      <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border border-gray-200">
-                        <Image 
-                          src="/doctor-image.jpg" 
-                          alt="Dr. Neha Sharma" 
-                          width={48} 
-                          height={48} 
-                          className="object-cover w-full h-full"
-                        />
+                  <div className="mb-8">
+                    <div className="flex items-center mb-3">
+                      <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-semibold text-gray-800">Attending Physician</h4>
+                    </div>
+                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 flex items-center">
+                      <div className="w-16 h-16 rounded-full overflow-hidden mr-4 bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+                        {selectedRecord.doctor.split(' ').map(name => name[0]).join('')}
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Dr. Neha Sharma</p>
-                        <p className="text-xs text-gray-500">Appointment Date: {selectedRecord.date}</p>
+                        <p className="text-base font-medium text-gray-900">{selectedRecord.doctor}</p>
+                        <p className="text-sm text-gray-600">Appointment Date: {new Date(selectedRecord.date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold mb-2">Diagnosis</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm">{selectedRecord.diagnosis || 'No diagnosis provided'}</p>
+                  <div className="mb-8">
+                    <div className="flex items-center mb-3">
+                      <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-semibold text-gray-800">Diagnosis</h4>
+                    </div>
+                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                      <p className="text-gray-900">{selectedRecord.diagnosis || 'No diagnosis provided'}</p>
                     </div>
                   </div>
                   
                   {selectedRecord.symptoms && (
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-2">Symptoms</h4>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm">{selectedRecord.symptoms}</p>
+                    <div className="mb-8">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-lg font-semibold text-gray-800">Symptoms</h4>
+                      </div>
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <p className="text-gray-900">{selectedRecord.symptoms}</p>
                       </div>
                     </div>
                   )}
 
-                  {/* Simplified Medication Reminder Section */}
+                  {/* Medication Reminder Section */}
                   {selectedRecord.medication && selectedRecord.medication !== 'No medications prescribed' && (
-                    <div className="mb-6">
-                      <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                        <div className="flex justify-between items-center">
+                    <div className="mb-8">
+                      <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-6 rounded-xl border border-amber-200 shadow-sm">
+                        <div className="flex items-center mb-4">
+                          <div className="w-10 h-10 bg-amber-200 rounded-full flex items-center justify-center text-amber-700 mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                          </div>
                           <h4 className="text-lg font-semibold text-amber-800">Medication Reminder</h4>
                         </div>
-                        <p className="text-sm mt-2 text-amber-700 mb-4">
+                        <p className="text-amber-700 mb-5">
                           Would you like to receive reminders for this medication?
                         </p>
                         <button 
@@ -1031,9 +1107,9 @@ export default function PreviousRecords() {
                             
                             toast.success('Medication reminder enabled successfully!');
                           }}
-                          className="w-full px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-md transition-all duration-300 text-center"
+                          className="w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all duration-300 text-center shadow-md hover:shadow-lg"
                         >
-                          Yes
+                          Enable Reminder
                         </button>
                       </div>
                     </div>
@@ -1042,61 +1118,124 @@ export default function PreviousRecords() {
                 
                 <div>
                   {selectedRecord.vitals && (
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-2">Vital Signs</h4>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        {selectedRecord.vitals.temperature && (
-                          <p className="text-sm"><span className="font-medium">Temperature:</span> {selectedRecord.vitals.temperature}°C</p>
-                        )}
-                        {selectedRecord.vitals.bloodPressure && (
-                          <p className="text-sm mt-1"><span className="font-medium">Blood Pressure:</span> {selectedRecord.vitals.bloodPressure}</p>
-                        )}
-                        {selectedRecord.vitals.heartRate && (
-                          <p className="text-sm mt-1"><span className="font-medium">Heart Rate:</span> {selectedRecord.vitals.heartRate} bpm</p>
-                        )}
-                        {selectedRecord.vitals.respiratoryRate && (
-                          <p className="text-sm mt-1"><span className="font-medium">Respiratory Rate:</span> {selectedRecord.vitals.respiratoryRate} breaths/min</p>
-                        )}
-                        {selectedRecord.vitals.oxygenSaturation && (
-                          <p className="text-sm mt-1"><span className="font-medium">Oxygen Saturation:</span> {selectedRecord.vitals.oxygenSaturation}%</p>
-                        )}
+                    <div className="mb-8">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-lg font-semibold text-gray-800">Vital Signs</h4>
+                      </div>
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <div className="grid grid-cols-2 gap-4">
+                          {selectedRecord.vitals.temperature && (
+                            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                              <div className="text-sm text-gray-500 mb-1">Temperature</div>
+                              <div className="flex items-end">
+                                <span className="text-2xl font-bold text-blue-600">{selectedRecord.vitals.temperature}</span>
+                                <span className="text-sm text-gray-600 ml-1">°C</span>
+                              </div>
+                            </div>
+                          )}
+                          {selectedRecord.vitals.bloodPressure && (
+                            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                              <div className="text-sm text-gray-500 mb-1">Blood Pressure</div>
+                              <div className="text-2xl font-bold text-blue-600">{selectedRecord.vitals.bloodPressure}</div>
+                            </div>
+                          )}
+                          {selectedRecord.vitals.heartRate && (
+                            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                              <div className="text-sm text-gray-500 mb-1">Heart Rate</div>
+                              <div className="flex items-end">
+                                <span className="text-2xl font-bold text-blue-600">{selectedRecord.vitals.heartRate}</span>
+                                <span className="text-sm text-gray-600 ml-1">bpm</span>
+                              </div>
+                            </div>
+                          )}
+                          {selectedRecord.vitals.respiratoryRate && (
+                            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                              <div className="text-sm text-gray-500 mb-1">Respiratory Rate</div>
+                              <div className="flex items-end">
+                                <span className="text-2xl font-bold text-blue-600">{selectedRecord.vitals.respiratoryRate}</span>
+                                <span className="text-sm text-gray-600 ml-1">breaths/min</span>
+                              </div>
+                            </div>
+                          )}
+                          {selectedRecord.vitals.oxygenSaturation && (
+                            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                              <div className="text-sm text-gray-500 mb-1">Oxygen Saturation</div>
+                              <div className="flex items-end">
+                                <span className="text-2xl font-bold text-blue-600">{selectedRecord.vitals.oxygenSaturation}</span>
+                                <span className="text-sm text-gray-600 ml-1">%</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
                   
                   {selectedRecord.medication && (
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-2">Medication</h4>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm">{selectedRecord.medication}</p>
+                    <div className="mb-8">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-lg font-semibold text-gray-800">Medication</h4>
+                      </div>
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                          <p className="text-gray-900">{selectedRecord.medication}</p>
+                        </div>
                       </div>
                     </div>
                   )}
                   
                   {selectedRecord.notes && (
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-2">Notes</h4>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm">{selectedRecord.notes}</p>
+                    <div className="mb-8">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-lg font-semibold text-gray-800">Notes</h4>
+                      </div>
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                          <p className="text-gray-900">{selectedRecord.notes}</p>
+                        </div>
                       </div>
                     </div>
                   )}
                   
                   {selectedRecord.followUp && (
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-2">Follow-up Plan</h4>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm">{selectedRecord.followUp}</p>
+                    <div className="mb-8">
+                      <div className="flex items-center mb-3">
+                        <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-lg font-semibold text-gray-800">Follow-up Plan</h4>
+                      </div>
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                          <p className="text-gray-900">{selectedRecord.followUp}</p>
+                        </div>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
               
-              <div className="mt-6 text-center">
+              <div className="mt-8 text-center">
                 <button 
                   onClick={closeModal}
-                  className="px-6 py-2 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-lg"
+                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:from-blue-700 hover:to-blue-900"
                 >
                   Close
                 </button>
@@ -1288,7 +1427,7 @@ export default function PreviousRecords() {
             </a>
             <a href="#" aria-label="YouTube">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-600 hover:text-gray-900 transition-all duration-300 hover:-translate-y-1">
-                <path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73z" />
+                <path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9-.83-1.48-1.73-1.73-.47-.13-.22-1.1-.28-1.9.07-.8.1-1.49.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9-.83-1.48-1.73-1.73z" />
               </svg>
             </a>
             <a href="#" aria-label="Instagram">

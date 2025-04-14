@@ -7,6 +7,10 @@ import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { FaSmile, FaMeh, FaFrown, FaSadTear, FaAngry, FaPills, FaLungs, FaHeadSideCough, FaThermometerHalf, FaSyringe } from 'react-icons/fa';
+import { BiBody, BiBrain } from 'react-icons/bi';
+import { GiStomach } from 'react-icons/gi';
+import { GiNoseFront } from 'react-icons/gi';
 
 type MedicationSuggestion = {
   morning: string[];
@@ -16,6 +20,8 @@ type MedicationSuggestion = {
 };
 
 type TimeOfDay = 'morning' | 'afternoon' | 'night';
+type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible';
+type SymptomCategory = 'head' | 'respiratory' | 'digestive' | 'body' | 'other';
 
 export default function DailyLog() {
   const { user, isLoaded } = useUser();
@@ -30,6 +36,21 @@ export default function DailyLog() {
   const [loading, setLoading] = useState(false);
   const [customMedicine, setCustomMedicine] = useState('');
   const [saveToMedicineLogs, setSaveToMedicineLogs] = useState(true);
+  
+  // New UI state variables
+  const [mood, setMood] = useState<MoodType>('okay');
+  const [painLevel, setPainLevel] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<SymptomCategory>('other');
+  const [commonSymptoms, setCommonSymptoms] = useState<{[key in SymptomCategory]: string[]}>({
+    head: ['Headache', 'Migraine', 'Dizziness', 'Ear pain'],
+    respiratory: ['Cough', 'Shortness of breath', 'Sore throat', 'Runny nose', 'Congestion'],
+    digestive: ['Nausea', 'Vomiting', 'Diarrhea', 'Constipation', 'Stomach ache'],
+    body: ['Fever', 'Body ache', 'Fatigue', 'Joint pain', 'Muscle pain'],
+    other: ['Rash', 'Itching', 'Swelling', 'Bleeding', 'Insomnia']
+  });
+  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [showSymptomSelector, setShowSymptomSelector] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY?.trim();
   console.log("API Key available:", !!apiKey); // Debug log without revealing the key
@@ -44,6 +65,52 @@ export default function DailyLog() {
   } catch (error) {
     console.error('Error initializing Gemini:', error);
   }
+
+  // Handle selecting a symptom from the symptom selector
+  const handleSymptomSelect = (symptom: string) => {
+    setSelectedSymptoms(prev => {
+      // Toggle the symptom
+      const newSelection = prev.includes(symptom) 
+        ? prev.filter(s => s !== symptom)
+        : [...prev, symptom];
+      
+      // Update the symptoms text area with the selected symptoms
+      updateSymptomsText(newSelection);
+      
+      return newSelection;
+    });
+  };
+  
+  // Update the symptoms text area based on selected symptoms
+  const updateSymptomsText = (selectedSymptomsList: string[]) => {
+    if (selectedSymptomsList.length === 0) {
+      setSymptoms('');
+      return;
+    }
+    
+    // Create detailed symptoms text with pain level and mood
+    const moodText = mood ? `I'm feeling ${mood} overall. ` : '';
+    const painText = painLevel > 0 ? `Pain level is ${painLevel}/10. ` : '';
+    const symptomsText = selectedSymptomsList.length > 0 
+      ? `I'm experiencing the following symptoms: ${selectedSymptomsList.join(', ')}. `
+      : '';
+    
+    setSymptoms(`${moodText}${painText}${symptomsText}`);
+  };
+  
+  // Go to next step in the form
+  const nextStep = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+  
+  // Go to previous step in the form
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
   // Mock responses for testing - remove in production
   const mockResponses: Record<string, MedicationSuggestion> = {
@@ -427,6 +494,9 @@ export default function DailyLog() {
               date, // Update date
               medicationTaken: selectedMedicines,
               aiSuggestion: suggestion,
+              mood,
+              painLevel,
+              selectedSymptoms,
               lastUpdated: new Date().toISOString(),
               patientName: patientName, // Ensure name is updated
               userId: user?.id,
@@ -446,6 +516,9 @@ export default function DailyLog() {
           symptoms,
           medicationTaken: selectedMedicines,
           aiSuggestion: suggestion,
+          mood,
+          painLevel,
+          selectedSymptoms,
           createdAt: new Date().toISOString(),
           userId: user?.id,
           patientName: patientName,
@@ -511,6 +584,10 @@ export default function DailyLog() {
       setSuggestion(null);
       setSuggestedMedicines([]);
       setSelectedMedicines([]);
+      setSelectedSymptoms([]);
+      setPainLevel(0);
+      setMood('okay');
+      setCurrentStep(1);
       
       // Set today's date again
       const today = new Date();
@@ -582,232 +659,485 @@ export default function DailyLog() {
             Track your symptoms and medication intake to help your doctor monitor your health.
           </p>
           
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Date Selection */}
-            <div className="mb-6">
-              <label htmlFor="date" className="block text-lg font-medium mb-2">Date</label>
-              <input
-                type="date"
-                id="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                required
-              />
+          {/* Progress Indicator */}
+          <div className="mb-8">
+            <div className="flex justify-between mb-2">
+              {[1, 2, 3].map((step) => (
+                <div 
+                  key={step}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    currentStep >= step ? 'bg-black text-white' : 'bg-gray-200 text-gray-600'
+                  } text-sm transition-colors duration-300`}
+                >
+                  {step}
+                </div>
+              ))}
             </div>
-            
-            {/* Symptom Input with AI Analysis */}
-            <div className="mb-8 animate-fadeIn" style={{ animationDelay: '100ms' }}>
-              <h2 className="text-2xl font-bold mb-4">Enter your symptoms</h2>
-              <label htmlFor="symptoms" className="block text-lg font-medium mb-2">Your current symptoms</label>
-              <div className="space-y-3">
-                <textarea
-                  id="symptoms"
-                  value={symptoms}
-                  onChange={(e) => setSymptoms(e.target.value)}
-                  placeholder="Symptoms Eg: Nausea, Diarrhea, Headache, Fever, etc."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-all h-32"
-                />
-                <div className="flex justify-end">
-                  <button 
-                    type="button" 
-                    onClick={analyzeSymptoms}
-                    disabled={isAnalyzing || !symptoms.trim()}
-                    className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${isAnalyzing ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+            <div className="h-2 bg-gray-200 rounded-full">
+              <div 
+                className="h-2 bg-black rounded-full transition-all duration-300"
+                style={{ width: `${(currentStep / 3) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Step 1: Basic Info */}
+            {currentStep === 1 && (
+              <div className="animate-fadeIn">
+                <h2 className="text-2xl font-bold mb-6">Step 1: Basic Information</h2>
+                
+                {/* Date Selection */}
+                <div className="mb-6">
+                  <label htmlFor="date" className="block text-lg font-medium mb-2">Date</label>
+                  <input
+                    type="date"
+                    id="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                    required
+                  />
+                </div>
+                
+                {/* Mood Selection */}
+                <div className="mb-6">
+                  <label className="block text-lg font-medium mb-3">How are you feeling today?</label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {[
+                      { value: 'great', icon: <FaSmile size={28} />, label: 'Great', color: 'bg-green-100 text-green-600' },
+                      { value: 'good', icon: <FaSmile size={28} />, label: 'Good', color: 'bg-green-50 text-green-500' },
+                      { value: 'okay', icon: <FaMeh size={28} />, label: 'Okay', color: 'bg-yellow-50 text-yellow-600' },
+                      { value: 'bad', icon: <FaFrown size={28} />, label: 'Bad', color: 'bg-orange-50 text-orange-600' },
+                      { value: 'terrible', icon: <FaSadTear size={28} />, label: 'Terrible', color: 'bg-red-50 text-red-600' }
+                    ].map((moodOption) => (
+                      <div 
+                        key={moodOption.value}
+                        onClick={() => setMood(moodOption.value as MoodType)}
+                        className={`flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer transition-all duration-300 border-2 ${
+                          mood === moodOption.value 
+                            ? 'border-black shadow-md' 
+                            : 'border-transparent hover:border-gray-200'
+                        } ${moodOption.color}`}
+                      >
+                        <div className="mb-2">{moodOption.icon}</div>
+                        <span className="text-sm font-medium">{moodOption.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Pain Level */}
+                <div className="mb-6">
+                  <label className="block text-lg font-medium mb-3">
+                    Pain Level: <span className="text-blue-700">{painLevel}/10</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value={painLevel}
+                    onChange={(e) => setPainLevel(parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>No Pain</span>
+                    <span>Mild</span>
+                    <span>Moderate</span>
+                    <span>Severe</span>
+                    <span>Extreme</span>
+                  </div>
+                </div>
+                
+                {/* Navigation Buttons */}
+                <div className="flex justify-end mt-8">
+                  <button
+                    type="button"
+                    onClick={nextStep}
+                    className="px-6 py-2 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
                   >
-                    {isAnalyzing ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Analyzing Symptoms...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M13.066 7.564a1 1 0 01.176 1.4l-3.87 5a1 1 0 01-1.552.063l-2.329-2.75a1 1 0 111.518-1.304l1.58 1.866 3.12-4.027a1 1 0 011.357-.248z" clipRule="evenodd" />
-                        </svg>
-                        <span>Analyze with AI</span>
-                      </>
-                    )}
+                    Next Step
                   </button>
                 </div>
               </div>
-            </div>
-
-            {/* AI Suggestions */}
-            {suggestion && (
-              <div className="mb-8 bg-blue-50 p-4 rounded-lg border border-blue-200 animate-fadeIn">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">AI Medication Suggestions</h3>
+            )}
+            
+            {/* Step 2: Symptom Selection */}
+            {currentStep === 2 && (
+              <div className="animate-fadeIn">
+                <h2 className="text-2xl font-bold mb-6">Step 2: Symptoms</h2>
                 
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium text-blue-700 flex justify-between">
-                      <span>Morning</span>
-                      <span className="text-sm text-blue-600">Select medicines you plan to take</span>
-                    </h4>
-                    <div className="mt-2">
-                      {suggestion.morning.map((med, i) => (
-                        <div key={`morning-${i}`} className="flex items-center space-x-3 p-2 hover:bg-blue-100 rounded-md transition-colors">
-                          <input
-                            type="checkbox"
-                            id={`morning-${i}`}
-                            checked={selectedMedicines.includes(med)}
-                            onChange={() => handleMedicineSelect(med)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label htmlFor={`morning-${i}`} className="text-gray-700 cursor-pointer">{med}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium text-blue-700">Afternoon/Evening</h4>
-                    <div className="mt-2">
-                      {suggestion.afternoon.map((med, i) => (
-                        <div key={`afternoon-${i}`} className="flex items-center space-x-3 p-2 hover:bg-blue-100 rounded-md transition-colors">
-                          <input
-                            type="checkbox"
-                            id={`afternoon-${i}`}
-                            checked={selectedMedicines.includes(med)}
-                            onChange={() => handleMedicineSelect(med)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label htmlFor={`afternoon-${i}`} className="text-gray-700 cursor-pointer">{med}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-medium text-blue-700">Night</h4>
-                    <div className="mt-2">
-                      {suggestion.night.map((med, i) => (
-                        <div key={`night-${i}`} className="flex items-center space-x-3 p-2 hover:bg-blue-100 rounded-md transition-colors">
-                          <input
-                            type="checkbox"
-                            id={`night-${i}`}
-                            checked={selectedMedicines.includes(med)}
-                            onChange={() => handleMedicineSelect(med)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <label htmlFor={`night-${i}`} className="text-gray-700 cursor-pointer">{med}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="pt-2 border-t border-blue-200">
-                    <h4 className="font-medium text-blue-700">Medical Advice</h4>
-                    <p className="text-gray-700 italic">{suggestion.advice}</p>
-                  </div>
-                  
-                  <div className="bg-blue-100 p-3 rounded-md">
-                    <p className="text-sm text-blue-800 font-medium mb-1">Selected Medications: {selectedMedicines.length}</p>
-                    {selectedMedicines.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
-                        {selectedMedicines.map((med, i) => (
-                          <span key={i} className="bg-white text-blue-700 text-sm py-1 px-2 rounded-full border border-blue-300 flex items-center">
-                            {med}
-                            <button 
-                              onClick={() => handleMedicineSelect(med)} 
-                              className="ml-1 text-red-500 hover:text-red-700"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
+                {/* Symptom Categories */}
+                <div className="mb-6">
+                  <label className="block text-lg font-medium mb-3">Select Symptom Category</label>
+                  <div className="grid grid-cols-5 gap-4 mb-6">
+                    {[
+                      { value: 'head', icon: <BiBrain size={24} />, label: 'Head & Neurological' },
+                      { value: 'respiratory', icon: <FaLungs size={24} />, label: 'Respiratory' },
+                      { value: 'digestive', icon: <GiStomach size={24} />, label: 'Digestive' },
+                      { value: 'body', icon: <BiBody size={24} />, label: 'Body & General' },
+                      { value: 'other', icon: <FaHeadSideCough size={24} />, label: 'Other' }
+                    ].map((category) => (
+                      <div 
+                        key={category.value}
+                        onClick={() => setSelectedCategory(category.value as SymptomCategory)}
+                        className={`flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition-all duration-300 border-2 ${
+                          selectedCategory === category.value 
+                            ? 'border-black shadow-md bg-black/5' 
+                            : 'border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="mb-2">{category.icon}</div>
+                        <span className="text-sm font-medium">{category.label}</span>
                       </div>
-                    ) : (
-                      <p className="text-sm text-blue-600">No medications selected yet</p>
-                    )}
-                    
-                    <div className="mt-3 flex">
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Common Symptoms */}
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="block text-lg font-medium">Common Symptoms</label>
+                    <span className="text-sm text-blue-700">
+                      Selected: {selectedSymptoms.length}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                    {commonSymptoms[selectedCategory].map((symptom) => (
+                      <div 
+                        key={symptom}
+                        onClick={() => handleSymptomSelect(symptom)}
+                        className={`p-3 rounded-lg cursor-pointer border transition-colors ${
+                          selectedSymptoms.includes(symptom)
+                            ? 'bg-blue-50 border-blue-300 text-blue-800'
+                            : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-center">
+                          <div className={`w-5 h-5 mr-3 rounded-full border flex items-center justify-center ${
+                            selectedSymptoms.includes(symptom) ? 'border-blue-500' : 'border-gray-300'
+                          }`}>
+                            {selectedSymptoms.includes(symptom) && (
+                              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            )}
+                          </div>
+                          <span>{symptom}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Custom Symptom Input */}
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium mb-2">Add Custom Symptom</label>
+                    <div className="flex">
                       <input
                         type="text"
-                        placeholder="Add your own medication..."
-                        value={customMedicine}
+                        placeholder="Enter other symptoms..."
+                        value={customMedicine} // Reusing the customMedicine state
                         onChange={(e) => setCustomMedicine(e.target.value)}
-                        className="flex-1 p-2 text-sm border border-blue-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="flex-1 p-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-black focus:border-transparent transition-all"
                       />
                       <button
+                        type="button"
                         onClick={() => {
                           if (customMedicine.trim()) {
-                            handleMedicineSelect(customMedicine.trim());
+                            handleSymptomSelect(customMedicine.trim());
                             setCustomMedicine('');
                           }
                         }}
-                        className="bg-blue-500 text-white px-3 py-2 text-sm rounded-r-md hover:bg-blue-600"
+                        className="bg-black text-white px-4 rounded-r-lg hover:bg-gray-800"
                       >
                         Add
                       </button>
                     </div>
-
-                    <div className="mt-3 flex items-center">
-                      <input
-                        type="checkbox"
-                        id="saveToMedicineLogs"
-                        checked={saveToMedicineLogs}
-                        onChange={(e) => setSaveToMedicineLogs(e.target.checked)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
-                      />
-                      <label htmlFor="saveToMedicineLogs" className="text-sm text-blue-700">
-                        Also save selected medications to my medicine logs
-                      </label>
-                    </div>
                   </div>
-                  
-                  <div className="bg-yellow-100 p-3 rounded-md text-yellow-800 text-sm">
-                    <p className="font-bold">Important Disclaimer:</p>
-                    <p>These are general suggestions only. Always consult with your healthcare provider before starting new medications. AI suggestions are not a replacement for professional medical advice.</p>
+                </div>
+                
+                {/* Symptom Text Area */}
+                <div className="mb-6">
+                  <label htmlFor="symptoms" className="block text-lg font-medium mb-2">Detailed Symptoms</label>
+                  <textarea
+                    id="symptoms"
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    placeholder="Describe your symptoms in detail..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-all h-32"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    This text will be updated automatically based on your selections, but you can also edit it manually.
+                  </p>
+                </div>
+                
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-8">
+                  <button
+                    type="button"
+                    onClick={prevStep}
+                    className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg transition-all duration-300 hover:bg-gray-300"
+                  >
+                    Back
+                  </button>
+                  <div className="flex space-x-3">
+                    <button 
+                      type="button" 
+                      onClick={analyzeSymptoms}
+                      disabled={isAnalyzing || !symptoms.trim()}
+                      className={`px-6 py-2 rounded-lg flex items-center space-x-2 transition-all ${isAnalyzing ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                    >
+                      {isAnalyzing ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Analyzing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M13.066 7.564a1 1 0 01.176 1.4l-3.87 5a1 1 0 01-1.552.063l-2.329-2.75a1 1 0 111.518-1.304l1.58 1.866 3.12-4.027a1 1 0 011.357-.248z" clipRule="evenodd" />
+                          </svg>
+                          <span>Analyze</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="px-6 py-2 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
+                    >
+                      Next Step
+                    </button>
                   </div>
                 </div>
               </div>
             )}
             
-            {/* Submit Button */}
-            <div className="animate-fadeIn" style={{ animationDelay: '300ms' }}>
-              <button
-                type="submit"
-                className="w-full md:w-auto px-8 py-3 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-1 active:translate-y-0"
-              >
-                Submit
-              </button>
-            </div>
+            {/* Step 3: Medication Selection */}
+            {currentStep === 3 && (
+              <div className="animate-fadeIn">
+                <h2 className="text-2xl font-bold mb-6">Step 3: Medications</h2>
+                
+                {/* AI Suggestions */}
+                {suggestion ? (
+                  <div className="mb-8 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4">AI Medication Suggestions</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                      {/* Morning Medications */}
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <h4 className="font-medium text-blue-800 mb-3 flex items-center">
+                          <FaSyringe className="mr-2" /> Morning
+                        </h4>
+                        <div className="space-y-2">
+                          {suggestion.morning.map((med, i) => (
+                            <div 
+                              key={`morning-${i}`} 
+                              onClick={() => handleMedicineSelect(med)}
+                              className={`flex items-center p-3 rounded-md cursor-pointer transition-all ${
+                                selectedMedicines.includes(med)
+                                  ? 'bg-white border border-blue-300'
+                                  : 'bg-blue-100 hover:bg-blue-200'
+                              }`}
+                            >
+                              <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${
+                                selectedMedicines.includes(med) ? 'border-blue-500' : 'border-blue-300'
+                              }`}>
+                                {selectedMedicines.includes(med) && <div className="w-3 h-3 rounded-full bg-blue-500"></div>}
+                              </div>
+                              <span className="text-blue-900">{med}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Afternoon Medications */}
+                      <div className="bg-amber-50 p-4 rounded-lg">
+                        <h4 className="font-medium text-amber-800 mb-3 flex items-center">
+                          <FaPills className="mr-2" /> Afternoon
+                        </h4>
+                        <div className="space-y-2">
+                          {suggestion.afternoon.map((med, i) => (
+                            <div 
+                              key={`afternoon-${i}`} 
+                              onClick={() => handleMedicineSelect(med)}
+                              className={`flex items-center p-3 rounded-md cursor-pointer transition-all ${
+                                selectedMedicines.includes(med)
+                                  ? 'bg-white border border-amber-300'
+                                  : 'bg-amber-100 hover:bg-amber-200'
+                              }`}
+                            >
+                              <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${
+                                selectedMedicines.includes(med) ? 'border-amber-500' : 'border-amber-300'
+                              }`}>
+                                {selectedMedicines.includes(med) && <div className="w-3 h-3 rounded-full bg-amber-500"></div>}
+                              </div>
+                              <span className="text-amber-900">{med}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Night Medications */}
+                      <div className="bg-indigo-50 p-4 rounded-lg">
+                        <h4 className="font-medium text-indigo-800 mb-3 flex items-center">
+                          <FaThermometerHalf className="mr-2" /> Night
+                        </h4>
+                        <div className="space-y-2">
+                          {suggestion.night.map((med, i) => (
+                            <div 
+                              key={`night-${i}`} 
+                              onClick={() => handleMedicineSelect(med)}
+                              className={`flex items-center p-3 rounded-md cursor-pointer transition-all ${
+                                selectedMedicines.includes(med)
+                                  ? 'bg-white border border-indigo-300'
+                                  : 'bg-indigo-100 hover:bg-indigo-200'
+                              }`}
+                            >
+                              <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${
+                                selectedMedicines.includes(med) ? 'border-indigo-500' : 'border-indigo-300'
+                              }`}>
+                                {selectedMedicines.includes(med) && <div className="w-3 h-3 rounded-full bg-indigo-500"></div>}
+                              </div>
+                              <span className="text-indigo-900">{med}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Medical Advice */}
+                    <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <h4 className="font-medium text-gray-800 mb-2">Medical Advice</h4>
+                      <p className="text-gray-700 text-sm whitespace-pre-line">{suggestion.advice}</p>
+                    </div>
+                    
+                    {/* Selected Medications Summary */}
+                    <div className="bg-white p-4 rounded-lg border border-gray-200">
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-medium text-gray-800">Selected Medications</h4>
+                        <span className="text-sm bg-black text-white px-2 py-1 rounded-full">
+                          {selectedMedicines.length} selected
+                        </span>
+                      </div>
+                      
+                      {selectedMedicines.length > 0 ? (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {selectedMedicines.map((med, i) => (
+                            <span key={i} className="bg-gray-100 text-gray-800 text-sm py-1 px-3 rounded-full border border-gray-300 flex items-center">
+                              {med}
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMedicineSelect(med);
+                                }} 
+                                className="ml-2 text-red-500 hover:text-red-700"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500 mb-4">No medications selected yet</p>
+                      )}
+                      
+                      {/* Custom Medication */}
+                      <div className="flex mb-4">
+                        <input
+                          type="text"
+                          placeholder="Add your own medication..."
+                          value={customMedicine}
+                          onChange={(e) => setCustomMedicine(e.target.value)}
+                          className="flex-1 p-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-black"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (customMedicine.trim()) {
+                              handleMedicineSelect(customMedicine.trim());
+                              setCustomMedicine('');
+                            }
+                          }}
+                          className="bg-black text-white px-3 py-2 text-sm rounded-r-md hover:bg-gray-800"
+                        >
+                          Add
+                        </button>
+                      </div>
+                      
+                      {/* Save to Medicine Logs */}
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="saveToMedicineLogs"
+                          checked={saveToMedicineLogs}
+                          onChange={(e) => setSaveToMedicineLogs(e.target.checked)}
+                          className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded mr-2"
+                        />
+                        <label htmlFor="saveToMedicineLogs" className="text-sm text-gray-700">
+                          Also save selected medications to my medicine logs
+                        </label>
+                      </div>
+                    </div>
+                    
+                    {/* Disclaimer */}
+                    <div className="mt-6 bg-yellow-50 p-3 rounded-md text-yellow-800 text-sm border border-yellow-200">
+                      <p className="font-bold">Important Disclaimer:</p>
+                      <p>These are general suggestions only. Always consult with your healthcare provider before starting new medications. AI suggestions are not a replacement for professional medical advice.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mb-8 p-6 rounded-lg border border-gray-200 bg-gray-50 text-center">
+                    <div className="text-gray-500 mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <p className="text-lg font-medium">No medication suggestions yet</p>
+                    </div>
+                    <p className="text-gray-600 mb-4">
+                      Go back to the previous step and click "Analyze" to get AI-generated medication suggestions based on your symptoms.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={prevStep}
+                      className="px-6 py-2 bg-black text-white rounded-lg transition-all duration-300 hover:bg-gray-800"
+                    >
+                      Back to Symptoms
+                    </button>
+                  </div>
+                )}
+                
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-8">
+                  <button
+                    type="button"
+                    onClick={prevStep}
+                    className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg transition-all duration-300 hover:bg-gray-300"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg transition-all duration-300 hover:bg-green-700 hover:shadow-lg disabled:bg-gray-400"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <div className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                      </div>
+                    ) : 'Submit Health Log'}
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
         </div>
-
-        {suggestedMedicines.length > 0 && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">Suggested Medicines</h2>
-            <div className="space-y-2">
-              {suggestedMedicines.map((medicine, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleMedicineSelect(medicine)}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedMedicines.includes(medicine)}
-                    onChange={() => {}}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <span className="text-gray-900">{medicine}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={redirectToPharmEasy}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            >
-              Buy Selected Medicines on PharmEasy
-            </button>
-          </div>
-        )}
       </main>
 
       {/* Footer */}

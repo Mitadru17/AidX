@@ -8,6 +8,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 // Log for debugging - remove this in production
 console.log("API Key available:", API_KEY ? "Yes" : "No");
 
+// Initialize the Google Generative AI
 const genAI = new GoogleGenerativeAI(API_KEY || "");
 
 export async function POST(req: NextRequest) {
@@ -29,8 +30,10 @@ export async function POST(req: NextRequest) {
     // Create a prompt for Gemini to analyze potential ADRs
     const prompt = createADRAnalysisPrompt(patientData);
     
-    // Get the Gemini model (using Gemini Pro for complex text analysis)
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Get the Gemini model - using gemini-pro instead of gemini-1.0-pro
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-pro"
+    });
     
     // Generate a response from Gemini
     const result = await model.generateContent(prompt);
@@ -44,7 +47,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error processing Gemini AI request:", error);
     return NextResponse.json(
-      { error: "Failed to analyze patient data" }, 
+      { error: "Failed to analyze patient data", details: error instanceof Error ? error.message : String(error) }, 
       { status: 500 }
     );
   }
